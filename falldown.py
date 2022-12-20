@@ -15,7 +15,7 @@ right_wall = uvage.from_color(600, 0, "black", 5, 2000)
 #falling speeds
 box_base = 3
 box_falling_velocity = box_base
-gravity = 1.1
+gravity = 1.05
 
 #game setting
 game_over = False
@@ -67,10 +67,6 @@ def character_touches_floor():
             character.y += box_falling_velocity
 
 
-
-
-
-
 # ----- Make the Floors ------
 def making_floors(y=0):
     """
@@ -110,11 +106,9 @@ def move_floors():
         list_of_floors.append(list_of_sides_floors)
 
 
-
-
 making_floors() #calling function to make floors
 
-#run the game
+# ---- Function for running game ---- 
 def tick():
     """
     this processes the function and game
@@ -125,16 +119,27 @@ def tick():
     global character
     global score
     global first_start
+    global list_of_floors
 
-
-    if uvage.is_pressing("space") and game_over != True:
+    # ---- To start game ---- 
+    if uvage.is_pressing("space") and game_over == False:
         game_on= True
 
-    if game_on: #games starting
+    # ---- To restart ---- 
+    if game_over == True and uvage.is_pressing("r"):
+        game_over = False
+        game_on = False
+        score = 0
+        first_start = True  
+        character.x = 200
+        character.y = 300
+        list_of_floors = []
+        making_floors()
+
+    if game_on: 
 
         # ------ Box functions -------
         move_character()
-
 
         # ----- Floor functions ------
         character_touches_floor()
@@ -142,32 +147,38 @@ def tick():
 
         # ---- Keeping Score ----
         score += 1
+        # ---- How to lose ---- 
+        if character.y < -10: 
+            game_on = False
+            game_over = True
+
+
 
     # ----- Draw stuff -----
 
     camera.clear("light green") #green background and clears the lagging end of the box
     camera.draw(character)
 
-    for floor in list_of_floors: #draws each half
+    # ---- Draws instuctions to start ---- 
+    if not game_on and first_start and game_over == False: 
+        camera.draw(uvage.from_text(300, 200, "Press Space to Start", 50, "Red", bold=True))
+
+    # ---- Draw floors ---- 
+    for floor in list_of_floors: 
         for half in floor:
             camera.draw(half)
 
+    # ---- Draw walls ---- 
     camera.draw(left_wall)
     camera.draw(right_wall)
 
-    camera.draw(uvage.from_text(300, 50, str(score//30), 50, "Red", bold=True)) #scoreboard, divide by 30 because of 30 ticks per second
+    # ---- Draw score---- 
+    camera.draw(uvage.from_text(300, 50, str(score//30), 50, "Red", bold=True)) 
 
-    if not game_on and first_start: # for the message of how to start the game, only appears during the first start
-
-        camera.draw(uvage.from_text(300, 200, "Press Space to Start", 50, "Red", bold=True))
-
-
-    if character.y < -10: #reaches the top, loses
-        game_on = False
-        game_over = True
 
     if game_over == True: # shows game over texts when player loses
         camera.draw(uvage.from_text(300, 200, "GAME OVER", 50, "Red", bold=True))
+        camera.draw(uvage.from_text(300, 250, "Press 'R' to Restart", 40, "Red", bold=True))
         game_on = False
         first_start = False #turns off the first start message
 
