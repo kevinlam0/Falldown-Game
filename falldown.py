@@ -126,7 +126,8 @@ def tick():
     global score
     global first_start
 
-    if uvage.is_pressing("space"):
+
+    if uvage.is_pressing("space") and game_over != True:
         game_on= True
 
     if game_on: #games starting
