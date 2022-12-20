@@ -11,6 +11,6 @@
     - Gamebox accelerates as it is falling
     - Randomized location of gaps on every floor
     - Manuel inputs of arrow keys (left and right) to move
-    - Visual Component of score, "Game Over," "Press to start."
+    - Visual Component of score, "Game Over," "Press to start," and restart option. 
     - Game over when gamebox reaches the top
-   
+    - Restart option
